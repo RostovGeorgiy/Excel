@@ -1,12 +1,13 @@
-package ru.academits;
+package ru.academits.excel;
 
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.FileOutputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 
 public class Main {
@@ -23,19 +24,19 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        List<Person> personsList = new ArrayList<>();
+        final int PADDING = 3 * 256;
+        final int COLUMN_WIDTH = 255 * 256;
 
-        personsList.add(new Person("Ivan", "Petrov", 26, "123245"));
-        personsList.add(new Person("Nikolay", "Sidorov", 30, "54234"));
-        personsList.add(new Person("Irina", "Shevtsova", 25, "333556"));
-        personsList.add(new Person("Ekaterina", "Ivanova", 34, "55235234"));
+        List<Person> personsList = Arrays.asList(new Person("Ivan", "Petrov", 26, "123245"),
+                new Person("Nikolay", "Sidorov", 30, "54234"),
+                new Person("Irina", "Shevtsova", 25, "333556"),
+                new Person("Ekaterina", "Ivanova", 34, "55235234"));
 
         String outputFilePath = "persons.xlsx";
 
-        try (XSSFWorkbook workbook = new XSSFWorkbook();
-             FileOutputStream fileOut = new FileOutputStream(outputFilePath)) {
-
-            XSSFSheet personsSheet = workbook.createSheet("Persons data");
+        try (Workbook workbook = new XSSFWorkbook();
+             BufferedOutputStream outputStream = new BufferedOutputStream(Files.newOutputStream(Paths.get(outputFilePath)))) {
+            Sheet personsSheet = workbook.createSheet("Persons data");
 
             CellStyle whiteRowStyle = workbook.createCellStyle();
 
@@ -98,16 +99,15 @@ public class Main {
                 personsSheet.autoSizeColumn(i);
 
                 int currentWidth = personsSheet.getColumnWidth(i);
-                int padding = 3 * 256;
 
-                personsSheet.setColumnWidth(i, Math.min(currentWidth + padding, 255 * 256));
+                personsSheet.setColumnWidth(i, Math.min(currentWidth + PADDING, COLUMN_WIDTH));
             }
 
-            workbook.write(fileOut);
+            workbook.write(outputStream);
 
             System.out.println("Excel file successfully created at: " + outputFilePath);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Error: " + e.getMessage());
         }
     }
 }

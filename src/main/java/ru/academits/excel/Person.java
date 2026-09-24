@@ -1,10 +1,10 @@
-package ru.academits;
+package ru.academits.excel;
 
 public class Person {
-    String firstName;
-    String secondName;
-    int age;
-    String phone;
+    private String firstName;
+    private String secondName;
+    private int age;
+    private String phone;
 
     public Person(String firstName, String secondName, int age, String phone) {
         this.firstName = firstName;
