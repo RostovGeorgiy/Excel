@@ -53,7 +53,9 @@ public class Main {
             int rowNumber = 1;
 
             for (Person person : personsList) {
-                Row personRow = personsSheet.createRow(rowNumber++);
+                Row personRow = personsSheet.createRow(rowNumber);
+
+                rowNumber++;
 
                 CellStyle currentStyle = (rowNumber % 2 == 0) ? greyRowStyle : whiteRowStyle;
 
